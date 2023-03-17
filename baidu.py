@@ -10,7 +10,22 @@ import sys
 import re
 import requests
 import chardet
+from selenium import webdriver #需要pip install selenium
+from selenium.webdriver.chrome.options import Options
 
+
+def getHtmlBySelenium(url):
+    options = Options() #浏览器选项
+    #等价于 options = webdriver.chrome.options.Options()
+    options.add_argument('--headless') #规定chrome浏览器隐身模式运行
+    options.add_argument('--disable-gpu') #禁止chrome使用gpu加速，能快点
+    driver = webdriver.Chrome(executable_path='c:/tmp/chromedriver.exe', options=options)
+    #driver就是个chrome浏览器。需要下载安装chrome驱动器 chromedriver.exe
+    driver.get(url) #浏览器装入网页
+    html = driver.page_source #网页源代码
+    driver.close() #关闭浏览器
+    driver.quit() #退出
+    return html #返回字符串
 
 def getHtml2(url):
     fakeHeaders = {'User-Agent':
@@ -49,7 +64,8 @@ def getHtml(url):
 def getBaiduPic(word, n):
     url = "https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=index&fr=&hs=0&xthttps=111111&sf=1&fmq=&pv=&ic=0&nc=1&z=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&ie=utf-8&word="
     url += word
-    html = getHtml2(url)
+    # html = getHtml2(url)
+    html = getHtmlBySelenium(url)
     pt = '\"thumbURL\":.*?\"(.*?)\"'  # 正则表达式，用于寻找图片网址
     i = 0
 
